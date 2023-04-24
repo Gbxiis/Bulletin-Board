@@ -1,8 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
   updatePosts();
 });
+
 function updatePosts() {
-  fetch("http://localhost:5000/api/all")
+  fetch("http://192.168.1.8:5000/api/all")
     .then((res) => {
       return res.json();
     })
@@ -24,5 +25,32 @@ function updatePosts() {
     });
 }
 
-function newPost() {}
-  
+function newPost() {
+  let title = document.getElementById("title").value;
+  let description = document.getElementById("desc").value;
+
+  if (title.trim() === "" || description.trim() === "") {
+    let alert = document.getElementById("alert");
+    alert.style.display = "block";
+    return;
+  }
+
+  let post = { title, description };
+
+  const options = {
+    method: "POST",
+    headers: new Headers({ "content-type": "application/json" }),
+    body: JSON.stringify(post),
+  };
+
+  fetch("http://192.168.1.8:5000/api/new", options).then((res) => {
+    updatePosts();
+    document.getElementById("title").value = "";
+    document.getElementById("desc").value = "";
+  });
+}
+
+function removeAlert() {
+  let alert = document.getElementById("alert");
+  alert.style.display = "none";
+}
